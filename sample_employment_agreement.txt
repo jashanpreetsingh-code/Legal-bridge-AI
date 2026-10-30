@@ -1,0 +1,52 @@
+EXECUTIVE EMPLOYMENT & CONFIDENTIALITY AGREEMENT
+
+THIS EMPLOYMENT AGREEMENT is entered into on 1st November 2026 by and between:
+
+EMPLOYER:
+TechSphere Innovations Private Limited, a company incorporated under the Companies Act, 2013, having its registered corporate office at Cyber City, Sector 67, Mohali, Punjab - 160062 (hereinafter referred to as the "COMPANY").
+
+AND
+
+EMPLOYEE:
+Mr. Jashanpreet Singh, residing at SAS Nagar, Mohali, Punjab (hereinafter referred to as the "EMPLOYEE").
+
+WHEREAS the Company desires to retain the services of the Employee, and the Employee agrees to provide services as "Senior AI Systems Engineer" on the following mutual terms and conditions:
+
+1. APPOINTMENT & COMMENCEMENT:
+The Employee's appointment shall be effective from 15th November 2026. The initial 3 (three) months of employment shall constitute a probationary period, during which performance shall be evaluated.
+
+2. COMPENSATION & EMOLUMENTS:
+(a) Fixed Annual CTC: ₹16,50,000/- (Sixteen Lakh Fifty Thousand Rupees only) payable in 12 equal monthly installments on or before the 1st working day of each subsequent month.
+(b) Annual Performance Incentive: Up to ₹2,50,000/- based on meeting key performance indicators (KPIs).
+(c) Statutory Deductions: Income tax (TDS), Provident Fund (EPF), and professional tax shall be deducted as per applicable law.
+
+3. WORKING HOURS & REMOTE WORK POLICY:
+Standard working hours are 40 hours per week (Monday to Friday, 9:30 AM to 6:30 PM IST). A hybrid work policy permits up to 2 days of remote work per week with prior managerial approval.
+
+4. NON-COMPETE & NON-SOLICITATION RESTRICTIONS:
+(a) During the term of employment and for a period of 12 (twelve) months following separation, the Employee shall not directly or indirectly work with, consult for, or establish any business competing directly with Company's AI development platforms within India.
+(b) The Employee covenants not to solicit, recruit, or entice away any employee, client, or vendor of the Company for 18 months post-employment.
+
+5. INTELLECTUAL PROPERTY & WORK-FOR-HIRE:
+All inventions, source code, neural network models, architectures, documentation, and patentable work created during employment belong exclusively and solely to the Company as "Work Made for Hire". The Employee hereby assigns all worldwide copyrights and patent rights to the Company.
+
+6. TERMINATION & NOTICE PERIOD:
+(a) During probation: Either party may terminate with 15 (fifteen) days' notice or salary in lieu.
+(b) Post-confirmation: Either party may terminate with 60 (sixty) days' written notice or payment of gross salary in lieu of notice.
+(c) Summary Dismissal: The Company may terminate employment immediately without notice or severance for gross misconduct, data theft, or breach of confidentiality.
+
+7. CONFIDENTIAL INFORMATION:
+The Employee shall strictly maintain the secrecy of proprietary source code, internal training data, and client records. This confidentiality covenant shall survive indefinitely following termination of employment.
+
+8. GOVERNING LAW & JURISDICTION:
+This Agreement is governed by the laws of India. Any legal dispute shall be subject to the exclusive jurisdiction of the competent courts in SAS Nagar (Mohali) / Chandigarh.
+
+IN WITNESS WHEREOF, the parties hereto have signed this Agreement on the date first mentioned above.
+
+FOR TECHSPHERE INNOVATIONS PVT LTD:
+Authorized Signatory: _________________________
+HR Director
+
+EMPLOYEE:
+Signature: _________________________
+Jashanpreet Singh

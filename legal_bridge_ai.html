@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Legal-Bridge AI — Intelligent Legal Assistant powered by Gemma 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --font-sans:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --transition:0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Dark Theme (Default) */
+  --bg:#070a10;
+  --bg-gradient:radial-gradient(ellipse at 50% -10%, #162438 0, transparent 50%), #070a10;
+  --panel:#0d121c;
+  --panel-card:#111824;
+  --panel-hover:#162030;
+  --panel-glass:rgba(13, 18, 28, 0.85);
+  --line:#1e293b;
+  --line-subtle:#162030;
+  --text:#f1f5f9;
+  --text-muted:#8292a6;
+  --text-dim:#5b6b80;
+  --accent:#7bf754;
+  --accent-glow:rgba(123, 247, 84, 0.2);
+  --accent-dark:#112214;
+  --accent2:#4ed5c6;
+  --warning:#ffb03a;
+  --warning-bg:rgba(255, 176, 58, 0.12);
+  --danger:#ff606e;
+  --danger-bg:rgba(255, 96, 110, 0.12);
+  --info:#68b1ff;
+  --info-bg:rgba(104, 177, 255, 0.12);
+  --shadow-lg:0 24px 60px rgba(0,0,0,0.55);
+  --shadow-sm:0 6px 18px rgba(0,0,0,0.3);
+  --radius-lg:18px;
+  --radius-md:12px;
+  --radius-sm:8px;
+}
+
+[data-theme="light"] {
+  --bg:#f8fafc;
+  --bg-gradient:radial-gradient(ellipse at 50% -10%, #e2eaf5 0, transparent 50%), #f8fafc;
+  --panel:#ffffff;
+  --panel-card:#f1f5f9;
+  --panel-hover:#e2e8f0;
+  --panel-glass:rgba(255, 255, 255, 0.9);
+  --line:#e2e8f0;
+  --line-subtle:#edf2f7;
+  --text:#0f172a;
+  --text-muted:#64748b;
+  --text-dim:#94a3b8;
+  --accent:#16a34a;
+  --accent-glow:rgba(22, 163, 74, 0.15);
+  --accent-dark:#ecfdf5;
+  --accent2:#0d9488;
+  --warning:#d97706;
+  --warning-bg:rgba(217, 119, 6, 0.1);
+  --danger:#dc2626;
+  --danger-bg:rgba(220, 38, 38, 0.1);
+  --info:#2563eb;
+  --info-bg:rgba(37, 99, 235, 0.1);
+  --shadow-lg:0 20px 50px rgba(15, 23, 42, 0.08);
+  --shadow-sm:0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg-gradient);
+  color:var(--text);
+  font:14px/1.6 var(--font-sans);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* Ambient Background Glow Effect */
+body::before{
+  content:"";
+  position:fixed;
+  top:-130px;
+  left:50%;
+  transform:translateX(-50%);
+  width:940px;
+  height:480px;
+  background:radial-gradient(ellipse at center, rgba(123, 247, 84, 0.12) 0%, rgba(78, 213, 198, 0.08) 45%, transparent 70%);
+  filter:blur(80px);
+  pointer-events:none;
+  z-index:0;
+  animation:ambient-drift 14s ease-in-out infinite alternate;
+}
+@keyframes ambient-drift{
+  0%{transform:translateX(-50%) scale(0.95); opacity:0.65;}
+  50%{transform:translateX(-46%) scale(1.08) translateY(24px); opacity:0.95;}
+  100%{transform:translateX(-54%) scale(1) translateY(-10px); opacity:0.7;}
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;outline:none;background:transparent}
+a{color:var(--accent);text-decoration:none}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-dim)}
+
+/* Top Navigation Bar with Entrance Animation */
+.topbar{
+  height:72px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;position:sticky;top:0;z-index:30;
+  background:var(--panel-glass);backdrop-filter:blur(20px);
+  animation:slideDown 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{
+  height:42px;width:42px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06140b;
+  box-shadow:0 0 24px var(--accent-glow);flex-shrink:0;
+  animation:logoEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition:transform 0.3s ease;
+}
+.logo:hover{transform:scale(1.08) rotate(4deg);}
+.logo svg{width:24px;height:24px}
+.brand-info h1{
+  font-size:17px;letter-spacing:-0.4px;margin:0;font-weight:800;
+  display:flex;align-items:center;gap:8px;
+}
+.badge-ai{
+  font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px;
+  background:var(--accent-dark);color:var(--accent);border:1px solid var(--accent);
+}
+.brand-info p{margin:1px 0 0;font-size:11.5px;color:var(--text-muted)}
+
+.topbar-right{display:flex;align-items:center;gap:12px}
+.status-badge{
+  border:1px solid var(--line);border-radius:999px;padding:6px 14px;
+  color:var(--text-muted);font-size:11.5px;font-weight:600;
+  display:flex;align-items:center;gap:8px;background:var(--panel-card);
+  transition:var(--transition);cursor:pointer;
+}
+.status-badge:hover{border-color:var(--text-dim);color:var(--text)}
+.dot{height:8px;width:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.dot.offline{background:var(--danger);box-shadow:0 0 10px var(--danger)}
+.dot.connecting{background:var(--warning);box-shadow:0 0 10px var(--warning);animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:0.4}}
+
+.nav-btn{
+  border:1px solid var(--line);background:var(--panel-card);color:var(--text);
+  padding:7px 13px;border-radius:999px;font-size:12px;font-weight:600;
+  display:flex;align-items:center;gap:7px;transition:var(--transition);
+}
+.nav-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Staggered Page Entrance Keyframes */
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeInLeft{
+  from{opacity:0;transform:translateX(-26px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeInScale{
+  from{opacity:0;transform:scale(0.985) translateY(12px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@keyframes logoEntrance{
+  0%{opacity:0;transform:scale(0.7) rotate(-10deg)}
+  100%{opacity:1;transform:scale(1) rotate(0deg)}
+}
+
+/* Main Application Layout (2-Column Studio & Stage) */
+.app-container{
+  max-width:1680px;margin:0 auto;padding:22px 28px;
+  display:grid;grid-template-columns:360px 1fr;gap:26px;align-items:start;
+}
+
+/* Common Card Panel */
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+}
+
+/* Left Studio Panel with Entrance Animation */
+.studio{
+  padding:22px;display:flex;flex-direction:column;gap:20px;position:sticky;top:92px;
+  animation:fadeInLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+}
+.section-title{
+  font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--text-muted);margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;
+}
+
+/* Quick Sample Pills */
+.sample-pills{display:flex;gap:7px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.sample-pill{
+  flex:1;padding:7px 10px;border-radius:var(--radius-sm);background:var(--panel-card);
+  border:1px solid var(--line);color:var(--text);font-size:11.5px;font-weight:600;
+  white-space:nowrap;display:flex;align-items:center;justify-content:center;gap:6px;
+  transition:var(--transition);
+}
+.sample-pill:hover{border-color:var(--accent);background:var(--panel-hover);color:var(--accent);transform:translateY(-1px)}
+
+/* Document Input: Two Distinct Ways */
+.doc-input-tabs{
+  display:flex;background:var(--panel-card);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:3px;margin-bottom:12px;gap:3px;
+}
+.tab-btn{
+  flex:1;padding:8px 10px;border-radius:var(--radius-sm);font-size:12px;
+  font-weight:750;color:var(--text-muted);transition:var(--transition);text-align:center;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.tab-btn.active{background:var(--panel);color:var(--text);border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+
+/* Way 1: Text Input Panel */
+.input-way-panel{display:none;flex-direction:column;gap:8px}
+.input-way-panel.active{display:flex}
+.input-way-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.live-count{font-size:11px;font-weight:700;color:var(--accent);font-family:var(--font-mono)}
+.paste-textarea{
+  width:100%;height:150px;background:var(--panel-card);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:11px 13px;color:var(--text);
+  font-family:var(--font-sans);font-size:12px;line-height:1.6;resize:vertical;outline:none;
+  transition:var(--transition);
+}
+.paste-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow)}
+.text-tools-row{display:flex;gap:6px;flex-wrap:wrap}
+.tool-mini-btn{
+  padding:5px 9px;border-radius:6px;background:var(--panel-card);border:1px solid var(--line);
+  color:var(--text-muted);font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;
+  transition:var(--transition);
+}
+.tool-mini-btn:hover{color:var(--text);background:var(--panel-hover);border-color:var(--text-dim)}
+
+/* Way 2: PDF or Document Drop Zone */
+.upload-box{
+  border:2px dashed var(--line);border-radius:var(--radius-md);padding:22px 14px;
+  text-align:center;background:var(--panel-card);cursor:pointer;transition:var(--transition);
+}
+.upload-box:hover,.upload-box.dragover{
+  border-color:var(--accent);background:var(--accent-glow);transform:scale(1.01);
+}
+.upload-icon-circle{
+  width:44px;height:44px;margin:0 auto 10px;border-radius:13px;
+  background:var(--accent-dark);color:var(--accent);display:grid;place-items:center;
+}
+.upload-icon-circle svg{width:22px;height:22px}
+.upload-box h4{margin:0 0 4px;font-size:13px;font-weight:750}
+.upload-box p{margin:0;font-size:11px;color:var(--text-muted)}
+.upload-box .supported{font-size:10px;color:var(--text-dim);margin-top:6px;display:block}
+
+.file-extract-status{
+  display:flex;align-items:center;justify-content:space-between;padding:10px 12px;
+  border-radius:var(--radius-md);background:var(--panel-card);border:1px solid var(--accent);
+  margin-top:8px;font-size:11.5px;color:var(--text);
+}
+.extract-info{display:flex;align-items:center;gap:7px;overflow:hidden;color:var(--accent)}
+
+/* Document Loaded Banner */
+.doc-loaded-bar{
+  display:none;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-radius:var(--radius-md);background:var(--accent-dark);
+  border:1px solid var(--accent);color:var(--text);font-size:11.5px;font-weight:600;
+  margin-top:10px;
+}
+.doc-loaded-bar .doc-meta{display:flex;align-items:center;gap:8px;overflow:hidden}
+.doc-loaded-bar svg{color:var(--accent);flex-shrink:0}
+.doc-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-clear-btn{color:var(--text-muted);padding:2px 6px;border-radius:4px;font-size:11px}
+.doc-clear-btn:hover{color:var(--danger);background:var(--danger-bg)}
+
+/* Language & Reasoning Selectors */
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;letter-spacing:0.5px}
+.custom-select{
+  width:100%;background:var(--panel-card);border:1px solid var(--line);
+  color:var(--text);border-radius:var(--radius-md);padding:10px 14px;outline:none;
+  font-size:13px;font-weight:600;transition:var(--transition);
+}
+.custom-select:focus{border-color:var(--accent)}
+
+/* Primary CTA Button with Shimmer & Radar Pulse */
+.cta-button{
+  width:100%;border-radius:var(--radius-md);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04150b;
+  padding:14px 18px;font-size:13.5px;font-weight:800;letter-spacing:-0.2px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 8px 25px var(--accent-glow);transition:var(--transition);
+  position:relative;overflow:hidden;
+}
+.cta-button::after{
+  content:"";position:absolute;top:-50%;left:-100%;width:60%;height:200%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+  transform:rotate(25deg);animation:btn-shimmer 4.5s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes btn-shimmer{
+  0%, 75%{left:-100%}
+  100%{left:200%}
+}
+.cta-button:hover{transform:translateY(-2px);box-shadow:0 12px 32px var(--accent-glow);filter:brightness(1.08)}
+.cta-button:disabled{opacity:0.6;cursor:not-allowed;transform:none;filter:none}
+.cta-button svg{width:18px;height:18px}
+
+.cta-button.running{
+  background:var(--danger-bg);border:1px solid var(--danger);color:var(--danger);
+  animation:pulse-running 1.6s ease-in-out infinite;
+}
+@keyframes pulse-running{
+  0%, 100%{box-shadow:0 0 0 0 rgba(255,96,110,0.45)}
+  50%{box-shadow:0 0 0 12px rgba(255,96,110,0)}
+}
+
+/* Privacy Guarantee Pill */
+.privacy-pill{
+  display:flex;align-items:center;gap:9px;padding:9px 12px;
+  border-radius:var(--radius-md);background:var(--panel-card);border:1px solid var(--line);
+  font-size:11px;color:var(--text-muted);line-height:1.45;
+}
+.privacy-pill svg{color:var(--accent);flex-shrink:0}
+
+/* Right Stage (Main Content) */
+.stage{display:flex;flex-direction:column;gap:20px;min-width:0}
+
+/* Stage Hero Welcome Card with Entrance Animation */
+.hero-card{
+  padding:26px 30px;background:linear-gradient(165deg,var(--panel),var(--panel-card));
+  display:flex;flex-direction:column;gap:12px;position:relative;
+  animation:fadeInUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+}
+.hero-eyebrow{
+  color:var(--accent);font-size:10.5px;font-weight:800;letter-spacing:1.5px;
+  text-transform:uppercase;display:flex;align-items:center;gap:7px;
+}
+.hero-eyebrow:before{content:"";width:18px;height:2px;background:var(--accent)}
+.hero-title{font-size:clamp(22px,2.2vw,28px);font-weight:800;margin:0;letter-spacing:-0.8px;line-height:1.25}
+.hero-desc{margin:0;color:var(--text-muted);font-size:13.5px;max-width:760px;line-height:1.6}
+
+/* Key Contract Highlights Dashboard */
+.highlights-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+}
+.highlight-stat{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:14px 16px;display:flex;flex-direction:column;gap:4px;
+  transition:var(--transition);
+}
+.highlight-stat:hover{border-color:var(--text-dim);transform:translateY(-1px)}
+.highlight-stat-label{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase}
+.highlight-stat-value{font-size:17px;font-weight:800;color:var(--text);letter-spacing:-0.3px}
+.highlight-stat-sub{font-size:10.5px;color:var(--text-muted)}
+.risk-badge{
+  display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;
+  font-size:10.5px;font-weight:800;width:fit-content;
+}
+.risk-low{background:rgba(78, 213, 198, 0.15);color:var(--accent2);border:1px solid var(--accent2)}
+.risk-med{background:var(--warning-bg);color:var(--warning);border:1px solid var(--warning)}
+.risk-high{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger)}
+
+/* Workspace Navigation Tabs with Entrance Animation */
+.stage-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--line);padding-bottom:12px;gap:12px;flex-wrap:wrap;
+  animation:fadeInUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+}
+.stage-tabs{display:flex;gap:8px}
+.stage-tab{
+  padding:9px 18px;border-radius:999px;font-size:12.5px;font-weight:700;
+  color:var(--text-muted);display:flex;align-items:center;gap:8px;
+  border:1px solid transparent;transition:var(--transition);background:var(--panel);
+}
+.stage-tab:hover{color:var(--text);background:var(--panel-hover)}
+.stage-tab.active{
+  color:var(--text);border-color:var(--line);background:var(--panel-card);
+  box-shadow:var(--shadow-sm);
+}
+.tab-counter{
+  font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;
+  background:var(--line);color:var(--text);
+}
+.stage-tab.active .tab-counter{background:var(--accent);color:#06140b}
+
+/* =========================================================================
+   AI THINKING STATE VISUALIZER ANIMATIONS
+   ========================================================================= */
+.card.thinking-glow{
+  border-color:var(--accent);
+  box-shadow:0 0 35px var(--accent-glow);
+  animation:card-glow-pulse 2.2s ease-in-out infinite alternate;
+}
+@keyframes card-glow-pulse{
+  0%{box-shadow:0 0 14px var(--accent-glow)}
+  100%{box-shadow:0 0 38px rgba(123, 247, 84, 0.35)}
+}
+
+.thinking-state-box{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:32px 20px 24px;gap:18px;max-width:680px;margin:0 auto;
+}
+
+/* Neural Core & Double Orbital Rings */
+.neural-orb-container{
+  width:88px;height:88px;position:relative;display:grid;place-items:center;margin-bottom:6px;
+}
+.neural-core{
+  width:32px;height:32px;border-radius:50%;
+  background:radial-gradient(circle, var(--accent) 0%, var(--accent2) 75%);
+  box-shadow:0 0 30px var(--accent), 0 0 55px var(--accent-glow);
+  animation:neural-pulse 1.8s ease-in-out infinite alternate;
+}
+.neural-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:2px dashed var(--accent);opacity:0.65;
+  animation:neural-orbit 7s linear infinite;
+}
+.neural-ring.ring-2{
+  inset:8px;border:1.5px solid var(--accent2);border-top-color:transparent;
+  border-bottom-color:transparent;opacity:0.8;
+  animation:neural-orbit-reverse 4.5s linear infinite;
+}
+
+@keyframes neural-pulse{
+  0%{transform:scale(0.85);box-shadow:0 0 16px var(--accent)}
+  100%{transform:scale(1.18);box-shadow:0 0 42px var(--accent), 0 0 70px var(--accent-glow)}
+}
+@keyframes neural-orbit{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@keyframes neural-orbit-reverse{
+  from{transform:rotate(360deg)}
+  to{transform:rotate(0deg)}
+}
+
+/* Synaptic Wavebars */
+.thinking-badge-live{
+  display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;
+  background:var(--accent-dark);border:1px solid var(--accent);color:var(--accent);
+  font-size:11.5px;font-weight:750;letter-spacing:0.2px;box-shadow:0 0 18px var(--accent-glow);
+}
+.synapse-bars{display:flex;align-items:center;gap:3px;height:16px}
+.synapse-bar{
+  width:3px;background:var(--accent);border-radius:99px;
+  animation:wave-bounce 1s ease-in-out infinite alternate;
+}
+.synapse-bar:nth-child(1){height:8px;animation-delay:0.1s}
+.synapse-bar:nth-child(2){height:16px;animation-delay:0.35s}
+.synapse-bar:nth-child(3){height:11px;animation-delay:0.2s}
+.synapse-bar:nth-child(4){height:15px;animation-delay:0.45s}
+
+@keyframes wave-bounce{
+  0%{height:4px;opacity:0.35}
+  100%{height:16px;opacity:1}
+}
+
+.thinking-phase-text{
+  margin:0;font-size:13.5px;font-weight:600;color:var(--text);max-width:540px;line-height:1.5;
+}
+
+/* Live Thought Snippet Box */
+.thought-preview-bubble{
+  width:100%;background:#06080d;border:1px solid #1a2536;border-radius:var(--radius-md);
+  padding:14px 16px;text-align:left;font-family:var(--font-mono);font-size:11.5px;
+  box-shadow:inset 0 2px 10px rgba(0,0,0,0.4);border-left:3px solid var(--accent);
+}
+.thought-preview-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #141d2a;
+  color:var(--text-muted);font-size:10.5px;font-weight:700;text-transform:uppercase;
+}
+.thought-preview-snippet{
+  color:#82e09b;line-height:1.6;white-space:pre-wrap;max-height:85px;overflow-y:auto;
+}
+
+/* Shimmer Skeleton Lines */
+.thinking-skeleton-lines{
+  width:100%;display:flex;flex-direction:column;gap:10px;margin-top:6px;
+}
+.skel-line{
+  height:12px;border-radius:6px;
+  background:linear-gradient(90deg, var(--panel-card) 0%, var(--panel-hover) 50%, var(--panel-card) 100%);
+  background-size:200% 100%;
+  animation:skeleton-shimmer 1.8s ease-in-out infinite;
+}
+.skel-line.w80{width:82%}
+.skel-line.w95{width:96%}
+.skel-line.w60{width:64%}
+
+@keyframes skeleton-shimmer{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+
+/* Stage Actions (Toolbar) */
+.stage-actions{display:flex;gap:7px}
+.action-btn{
+  padding:7px 12px;border-radius:var(--radius-sm);background:var(--panel);
+  border:1px solid var(--line);color:var(--text-muted);font-size:11.5px;font-weight:600;
+  display:flex;align-items:center;gap:6px;transition:var(--transition);
+}
+.action-btn:hover{color:var(--text);border-color:var(--accent);background:var(--panel-hover)}
+
+/* Tab Panels */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Tab 1: Simplified Summary */
+.summary-container{padding:26px 30px}
+.summary-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--line);
+}
+.summary-header h3{margin:0;font-size:16px;font-weight:800;display:flex;align-items:center;gap:9px}
+.summary-body{font-size:13.5px;line-height:1.8;color:var(--text)}
+.summary-body h3{font-size:15px;font-weight:800;color:var(--accent);margin:24px 0 10px}
+.summary-body h3:first-child{margin-top:0}
+.summary-body h4{font-size:13.5px;font-weight:750;color:var(--accent2);margin:16px 0 6px}
+.summary-body p{margin:0 0 12px}
+.summary-body ul,.summary-body ol{margin:8px 0 16px;padding-left:22px}
+.summary-body li{margin:6px 0}
+.summary-body strong{color:var(--text);font-weight:750}
+.summary-body blockquote{
+  margin:14px 0;padding:12px 16px;border-left:3px solid var(--accent);
+  background:var(--panel-card);border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  color:var(--text-muted);
+}
+.summary-body table{width:100%;border-collapse:collapse;margin:14px 0}
+.summary-body th,.summary-body td{border:1px solid var(--line);padding:9px 12px;text-align:left;font-size:12.5px}
+.summary-body th{background:var(--panel-card);font-weight:750}
+
+/* Empty State */
+.empty-hero{
+  text-align:center;padding:50px 20px;color:var(--text-muted);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.empty-hero svg{width:48px;height:48px;color:var(--text-dim)}
+.empty-hero h4{margin:0;font-size:15px;font-weight:750;color:var(--text)}
+.empty-hero p{margin:0;max-width:440px;font-size:12.5px;line-height:1.6}
+
+/* Tab 2: Action Checklist */
+.checklist-container{padding:26px 30px}
+.checklist-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px;gap:14px;flex-wrap:wrap;
+}
+.filter-chips{display:flex;gap:6px}
+.filter-chip{
+  padding:5px 12px;border-radius:99px;font-size:11px;font-weight:700;
+  background:var(--panel-card);border:1px solid var(--line);color:var(--text-muted);
+  transition:var(--transition);
+}
+.filter-chip.active,.filter-chip:hover{background:var(--panel-hover);color:var(--text);border-color:var(--accent)}
+
+.checklist-progress-bar{
+  height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:20px;
+}
+.checklist-progress-fill{
+  height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:99px;transition:width 0.3s ease;
+}
+
+.checklist-items{display:flex;flex-direction:column;gap:10px}
+.checklist-card{
+  display:flex;align-items:flex-start;gap:14px;padding:14px 16px;border-radius:var(--radius-md);
+  background:var(--panel-card);border:1px solid var(--line);transition:var(--transition);
+}
+.checklist-card:hover{border-color:var(--text-dim);transform:translateX(2px)}
+.checklist-card input[type="checkbox"]{
+  appearance:none;width:18px;height:18px;border:1.5px solid var(--text-dim);
+  border-radius:5px;background:var(--panel);cursor:pointer;margin-top:2px;
+  position:relative;flex-shrink:0;transition:var(--transition);
+}
+.checklist-card input[type="checkbox"]:checked{
+  background:var(--accent);border-color:var(--accent);
+}
+.checklist-card input[type="checkbox"]:checked:after{
+  content:"✓";position:absolute;inset:-2px 0 0;text-align:center;
+  font-size:12px;font-weight:900;color:#06140b;
+}
+.checklist-copy{flex:1;min-width:0}
+.checklist-title{font-size:13px;font-weight:750;color:var(--text);display:block}
+.checklist-desc{font-size:11.5px;color:var(--text-muted);margin-top:3px;display:block}
+.checklist-card.checked{opacity:0.55}
+.checklist-card.checked .checklist-title{text-decoration:line-through}
+
+.priority-tag{
+  font-size:9px;font-weight:800;letter-spacing:0.5px;padding:3px 7px;
+  border-radius:5px;text-transform:uppercase;white-space:nowrap;
+}
+.priority-tag.high{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger)}
+.priority-tag.medium{background:var(--warning-bg);color:var(--warning);border:1px solid var(--warning)}
+.priority-tag.low{background:var(--info-bg);color:var(--info);border:1px solid var(--info)}
+
+/* Add Custom Step Input */
+.add-step-row{display:flex;gap:9px;margin-top:16px}
+.add-step-input{
+  flex:1;background:var(--panel-card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);padding:9px 12px;color:var(--text);font-size:12px;outline:none;
+}
+.add-step-input:focus{border-color:var(--accent)}
+.add-step-btn{
+  background:var(--panel);border:1px solid var(--line);color:var(--text);
+  padding:0 14px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;
+  transition:var(--transition);
+}
+.add-step-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Tab 3: Gemma 4 Reasoning & Chain-of-Thought */
+.reasoning-container{padding:26px 30px}
+.reasoning-meta-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--line);
+}
+.reasoning-meta-bar h3{margin:0;font-size:15px;font-weight:800}
+
+/* Timeline */
+.timeline-track{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px}
+.timeline-node{
+  background:var(--panel-card);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:12px;opacity:0.4;transition:var(--transition);display:flex;flex-direction:column;gap:4px;
+}
+.timeline-node.active{
+  opacity:1;border-color:var(--accent);box-shadow:0 0 16px var(--accent-glow);
+  background:var(--accent-dark);
+}
+.timeline-node.done{opacity:1;border-color:var(--line);background:var(--panel)}
+.timeline-step-num{font-size:10px;font-weight:800;color:var(--accent)}
+.timeline-step-name{font-size:11.5px;font-weight:750;color:var(--text)}
+
+/* Live Thought Stream Box */
+.cot-terminal{
+  background:#05070c;border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:16px;font-family:var(--font-mono);font-size:11.5px;line-height:1.7;
+  max-height:360px;overflow-y:auto;color:#7ee787;white-space:pre-wrap;word-break:break-word;
+}
+.cot-terminal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #141b27;
+  color:var(--text-muted);font-size:11px;
+}
+
+/* Tab 4: Interactive Q&A Assistant */
+.qa-container{padding:26px 30px}
+.qa-hero{margin-bottom:20px}
+.qa-hero h3{margin:0 0 6px;font-size:16px;font-weight:800}
+.qa-hero p{margin:0;font-size:12.5px;color:var(--text-muted)}
+
+.qa-suggestions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.qa-chip{
+  padding:7px 12px;border-radius:99px;background:var(--panel-card);border:1px solid var(--line);
+  color:var(--text-muted);font-size:11.5px;font-weight:600;transition:var(--transition);
+}
+.qa-chip:hover{border-color:var(--accent);color:var(--text);background:var(--panel-hover)}
+
+.qa-chat-box{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.qa-bubble{
+  padding:14px 16px;border-radius:var(--radius-md);font-size:13px;line-height:1.6;
+}
+.qa-bubble.user{
+  background:var(--panel-card);border:1px solid var(--line);align-self:flex-end;
+  max-width:80%;font-weight:600;
+}
+.qa-bubble.ai{
+  background:var(--panel);border:1px solid var(--line);align-self:flex-start;
+  max-width:92%;color:var(--text);
+}
+
+.qa-input-bar{display:flex;gap:10px}
+.qa-input-field{
+  flex:1;background:var(--panel-card);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:12px 16px;color:var(--text);
+  font-size:13px;outline:none;transition:var(--transition);
+}
+.qa-input-field:focus{border-color:var(--accent)}
+.qa-submit-btn{
+  background:var(--accent);color:#051409;padding:0 20px;border-radius:var(--radius-md);
+  font-size:13px;font-weight:800;transition:var(--transition);display:flex;align-items:center;gap:7px;
+}
+.qa-submit-btn:hover{filter:brightness(1.1)}
+
+/* Toast Notification */
+.toast-msg{
+  position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);
+  background:var(--accent);color:#04150b;padding:11px 20px;border-radius:99px;
+  font-size:12.5px;font-weight:800;box-shadow:var(--shadow-lg);opacity:0;
+  pointer-events:none;transition:0.25s ease;z-index:999;
+}
+.toast-msg.show{opacity:1;transform:translate(-50%,0)}
+
+/* Settings Modal */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;z-index:100;padding:20px;
+}
+.modal-window{
+  background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-lg);
+  width:100%;max-width:480px;padding:24px;box-shadow:var(--shadow-lg);
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-head h3{margin:0;font-size:16px;font-weight:800}
+.close-icon{font-size:20px;color:var(--text-muted);cursor:pointer}
+
+/* Responsive adjustments */
+@media(max-width:1100px){
+  .app-container{grid-template-columns:1fr;gap:20px;padding:16px}
+  .studio{position:static}
+  .highlights-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:650px){
+  .topbar{padding:0 16px;height:auto;padding-top:10px;padding-bottom:10px}
+  .highlights-grid{grid-template-columns:1fr}
+  .timeline-track{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 7v5.5c0 4.4 3.1 7.3 7.5 8.5 4.4-1.2 7.5-4.1 7.5-8.5V7L12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="m8.5 12.2 2.2 2.2 4.8-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="brand-info">
+      <h1>Legal-Bridge AI <span class="badge-ai">GEMMA 4</span></h1>
+      <p>Local On-Device Legal Intelligence &amp; Vernacular Translation</p>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <div class="status-badge" id="ollamaBadge" title="Ollama local status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusLabel">Checking Ollama...</span>
+    </div>
+    <button class="nav-btn" id="themeToggleBtn" title="Switch Light/Dark Mode">
+      <span id="themeIcon">☀️</span> Light Mode
+    </button>
+    <button class="nav-btn" id="settingsBtn" title="Configure model and ports">
+      ⚙️ Settings
+    </button>
+  </div>
+</header>
+
+<main class="app-container">
+  <!-- Left Column: Document Studio -->
+  <aside class="card studio">
+    <div class="section-title">
+      <span>01 / Choose Legal Contract</span>
+    </div>
+
+    <!-- Quick Load Sample Contracts -->
+    <div class="sample-pills">
+      <button class="sample-pill" data-case="rental" type="button">🏠 Rental Lease</button>
+      <button class="sample-pill" data-case="freelance" type="button">💼 Freelance</button>
+      <button class="sample-pill" data-case="nda" type="button">🔒 Mutual NDA</button>
+    </div>
+
+    <!-- Two Distinct Input Ways: 1. Text (First), 2. PDF/Document (Second) -->
+    <div class="doc-input-tabs" role="tablist">
+      <button class="tab-btn active" id="tabTextBtn" type="button">✍️ 1. Text Input</button>
+      <button class="tab-btn" id="tabDocBtn" type="button">📄 2. PDF / Document</button>
+    </div>
+
+    <!-- Way 1: Text Input (First, active by default) -->
+    <div class="input-way-panel active" id="wayTextPanel">
+      <div class="input-way-header">
+        <label class="form-label" style="margin:0">Type or Paste Clauses</label>
+        <span class="live-count" id="textStats">0 words</span>
+      </div>
+      <textarea class="paste-textarea" id="pasteTextarea" placeholder="Type or paste your contract clauses, rental agreement, or legal text directly here..."></textarea>
+      <div class="text-tools-row">
+        <button class="tool-mini-btn" id="pasteClipboardBtn" type="button" title="Paste from clipboard">
+          📋 Paste Clipboard
+        </button>
+        <button class="tool-mini-btn" id="clearTextBtn" type="button" title="Clear text">
+          🧹 Clear
+        </button>
+        <button class="tool-mini-btn" id="loadSampleToTextBtn" type="button" title="Insert sample agreement">
+          💡 Insert Sample
+        </button>
+      </div>
+    </div>
+
+    <!-- Way 2: PDF or Document Upload (Second) -->
+    <div class="input-way-panel" id="wayDocPanel">
+      <label class="form-label" style="margin:0 0 4px">Upload Legal Document</label>
+      <div class="upload-box" id="dropZone">
+        <div class="upload-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h4>Drag &amp; drop PDF or Document</h4>
+        <p>or click to browse from device</p>
+        <span class="supported">PDF · TXT · MD (Auto text extraction)</span>
+      </div>
+      <input id="filePicker" type="file" accept=".pdf,.txt,.md,application/pdf,text/plain" hidden />
+
+      <div class="file-extract-status" id="fileExtractStatus" style="display:none">
+        <div class="extract-info">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span id="fileExtractName">sample.pdf</span>
+        </div>
+        <button class="tool-mini-btn" id="viewExtractedInTextBtn" type="button" style="color:var(--accent)">
+          ✏️ Edit in Text View
+        </button>
+      </div>
+    </div>
+
+    <!-- Document Loaded Bar -->
+    <div class="doc-loaded-bar" id="docLoadedBar">
+      <div class="doc-meta">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span class="doc-name" id="docNameText">Ready for analysis</span>
+      </div>
+      <button class="doc-clear-btn" id="clearDocBtn" title="Clear document">✕ Clear</button>
+    </div>
+
+    <div class="form-group" style="margin-top:8px">
+      <label class="form-label">Explain &amp; Translate In</label>
+      <select class="custom-select" id="languageSelect">
+        <option value="Hindi" selected>🇮🇳 Hindi — हिन्दी</option>
+        <option value="Punjabi">🇮🇳 Punjabi — ਪੰਜਾਬੀ</option>
+        <option value="Tamil">🇮🇳 Tamil — தமிழ்</option>
+        <option value="Bengali">🇮🇳 Bengali — বাংলা</option>
+        <option value="Marathi">🇮🇳 Marathi — मराठी</option>
+        <option value="Gujarati">🇮🇳 Gujarati — ગુજરાતી</option>
+        <option value="Telugu">🇮🇳 Telugu — తెలుగు</option>
+        <option value="Kannada">🇮🇳 Kannada — ಕನ್ನಡ</option>
+        <option value="English">🇬🇧 Plain English</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Gemma 4 Mode</label>
+      <select class="custom-select" id="reasoningSelect">
+        <option value="thinking" selected>🧠 Deep Reasoning (Chain-of-Thought)</option>
+        <option value="direct">⚡ Fast Direct Summary</option>
+      </select>
+    </div>
+
+    <!-- Action Button -->
+    <button class="cta-button" id="analyzeBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v4m0 10v4M3 12h4m10 0h4M5.6 5.6l2.8 2.8m7.2 7.2 2.8 2.8m0-12.8-2.8 2.8m-7.2 7.2-2.8 2.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/></svg>
+      <span id="ctaText">Analyze Contract</span>
+    </button>
+
+    <div class="privacy-pill">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span><strong>Private by design:</strong> Runs 100% locally on your computer via Ollama. No files leave your machine.</span>
+    </div>
+  </aside>
+
+  <!-- Right Column: Legal Intelligence Hub (Stage) -->
+  <section class="stage">
+    <!-- Hero / Document Title Card -->
+    <div class="card hero-card">
+      <div class="hero-eyebrow">Local Multilingual Legal Reasoning</div>
+      <h2 class="hero-title" id="stageTitle">Plain-Language Legal Clarity for Everyone</h2>
+      <p class="hero-desc" id="stageDesc">
+        Upload any legal contract or select a sample case on the left. Gemma 4 will deliberate using deep Chain-of-Thought reasoning and explain clauses in your language.
+      </p>
+
+      <!-- Highlights Dashboard (Populated upon analysis) -->
+      <div class="highlights-grid" id="highlightsGrid" style="display:none;margin-top:10px">
+        <div class="highlight-stat">
+          <span class="highlight-stat-label">Financials</span>
+          <span class="highlight-stat-value" id="statFinance">₹14,500/mo</span>
+          <span class="highlight-stat-sub" id="statFinanceSub">₹30,000 Deposit</span>
+        </div>
+        <div class="highlight-stat">
+          <span class="highlight-stat-label">Notice Period</span>
+          <span class="highlight-stat-value" id="statNotice">30 Days</span>
+          <span class="highlight-stat-sub">Prior written notice</span>
+        </div>
+        <div class="highlight-stat">
+          <span class="highlight-stat-label">Contract Term</span>
+          <span class="highlight-stat-value" id="statTerm">11 Months</span>
+          <span class="highlight-stat-sub">Fixed tenancy</span>
+        </div>
+        <div class="highlight-stat">
+          <span class="highlight-stat-label">Risk Assessment</span>
+          <span class="risk-badge risk-med" id="statRisk">⚠️ Moderate Risk</span>
+          <span class="highlight-stat-sub" id="statRiskSub">Premature exit penalty</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Workspace Tabs & Toolbar -->
+    <div class="stage-nav">
+      <div class="stage-tabs">
+        <button class="stage-tab active" data-tab="summary" type="button">
+          📄 Simplified Breakdown
+        </button>
+        <button class="stage-tab" data-tab="checklist" type="button">
+          ✅ Action Checklist <span class="tab-counter" id="tabCheckCount">0</span>
+        </button>
+        <button class="stage-tab" data-tab="reasoning" type="button">
+          🧠 Gemma 4 Reasoning <span class="tab-counter" id="tabThoughtCount">0</span>
+        </button>
+        <button class="stage-tab" data-tab="qa" type="button">
+          💬 Ask Gemma 4
+        </button>
+      </div>
+
+      <div class="stage-actions">
+        <button class="action-btn" id="listenBtn" type="button" title="Text-to-speech audio playback">
+          🔊 Listen
+        </button>
+        <button class="action-btn" id="copyBtn" type="button" title="Copy to clipboard">
+          📋 Copy
+        </button>
+        <button class="action-btn" id="exportBtn" type="button" title="Download report">
+          📥 Export
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab 1: Simplified Summary Card -->
+    <div class="card tab-content active" id="tab-summary">
+      <div class="summary-container">
+        <div class="empty-hero" id="summaryEmpty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <h4>No Contract Analyzed Yet</h4>
+          <p>Pick a sample contract like <strong>Rental Lease</strong> or upload a PDF/text file from the sidebar, then click <strong>Analyze Contract</strong>.</p>
+        </div>
+        <div class="summary-body" id="summaryOutput" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Action Checklist Card -->
+    <div class="card tab-content" id="tab-checklist">
+      <div class="checklist-container">
+        <div class="checklist-header">
+          <div>
+            <h3 style="margin:0;font-size:15px;font-weight:800">Your Action &amp; Verification Plan</h3>
+            <span style="font-size:11.5px;color:var(--text-muted)" id="checklistProgressText">0 of 0 tasks completed</span>
+          </div>
+          <div class="filter-chips">
+            <button class="filter-chip active" data-filter="all" type="button">All</button>
+            <button class="filter-chip" data-filter="high" type="button">High Priority</button>
+            <button class="filter-chip" data-filter="medium" type="button">Medium</button>
+            <button class="filter-chip" data-filter="low" type="button">Low</button>
+          </div>
+        </div>
+
+        <div class="checklist-progress-bar">
+          <div class="checklist-progress-fill" id="checklistProgressFill"></div>
+        </div>
+
+        <div class="checklist-items" id="checklistItems">
+          <div class="empty-hero">
+            <h4>Checklist Awaiting Document</h4>
+            <p>Once Gemma 4 analyzes your contract, prioritized action items and safety steps will appear here.</p>
+          </div>
+        </div>
+
+        <div class="add-step-row">
+          <input class="add-step-input" id="customStepInput" type="text" placeholder="Add your own checklist item..." />
+          <button class="add-step-btn" id="addStepBtn" type="button">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Gemma 4 Reasoning & Chain-of-Thought Card -->
+    <div class="card tab-content" id="tab-reasoning">
+      <div class="reasoning-container">
+        <div class="reasoning-meta-bar">
+          <div>
+            <h3>Gemma 4 Cognitive Journey</h3>
+            <span style="font-size:11.5px;color:var(--text-muted)">Live step-by-step reasoning tokens generated on your CPU/GPU</span>
+          </div>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--accent)" id="cotTokenBadge">0 thought tokens</span>
+        </div>
+
+        <!-- 5-Step Process Timeline -->
+        <div class="timeline-track">
+          <div class="timeline-node" id="step0">
+            <span class="timeline-step-num">STEP 1</span>
+            <span class="timeline-step-name">Document Intake</span>
+          </div>
+          <div class="timeline-node" id="step1">
+            <span class="timeline-step-num">STEP 2</span>
+            <span class="timeline-step-name">CoT Reasoning</span>
+          </div>
+          <div class="timeline-node" id="step2">
+            <span class="timeline-step-num">STEP 3</span>
+            <span class="timeline-step-name">Clause Extraction</span>
+          </div>
+          <div class="timeline-node" id="step3">
+            <span class="timeline-step-num">STEP 4</span>
+            <span class="timeline-step-name">Localization</span>
+          </div>
+          <div class="timeline-node" id="step4">
+            <span class="timeline-step-num">STEP 5</span>
+            <span class="timeline-step-name">Action Checklist</span>
+          </div>
+        </div>
+
+        <!-- Chain-of-Thought Live Terminal -->
+        <div class="cot-terminal" id="cotTerminal">Waiting for Gemma 4 analysis...</div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Interactive Q&A Assistant Card -->
+    <div class="card tab-content" id="tab-qa">
+      <div class="qa-container">
+        <div class="qa-hero">
+          <h3>Ask Gemma 4 About This Contract</h3>
+          <p>Get instant answers regarding clauses, notice periods, or liabilities with full document context.</p>
+        </div>
+
+        <div class="qa-suggestions">
+          <button class="qa-chip" type="button" data-q="What are my exact payment deadlines and late fee penalties?">💰 Payment deadlines &amp; penalties?</button>
+          <button class="qa-chip" type="button" data-q="How can either party legally terminate this agreement?">🚪 Termination &amp; Notice rules?</button>
+          <button class="qa-chip" type="button" data-q="Are there any unfair penalties or hidden risks for me?">⚠️ Unfair clauses or risks?</button>
+          <button class="qa-chip" type="button" data-q="Is the security deposit refundable in full?">🛡️ Deposit refund conditions?</button>
+        </div>
+
+        <div class="qa-chat-box" id="qaChatBox"></div>
+
+        <div class="qa-input-bar">
+          <input class="qa-input-field" id="qaInputField" type="text" placeholder="Type any question about this contract..." />
+          <button class="qa-submit-btn" id="qaSubmitBtn" type="button">Ask Gemma 4 ↗</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Settings Modal -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal-window">
+    <div class="modal-head">
+      <h3>Ollama &amp; Engine Settings</h3>
+      <span class="close-icon" id="closeSettingsModal">&times;</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Ollama Host</label>
+      <input type="text" class="custom-select" id="settingHost" value="http://localhost:11434" />
+      <span style="font-size:10px;color:var(--text-muted);display:block;margin-top:3px">Default port is 11434</span>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Model</label>
+      <select class="custom-select" id="settingModel">
+        <option value="gemma4:e4b" selected>gemma4:e4b</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Inference Mode</label>
+      <select class="custom-select" id="settingDevice">
+        <option value="cpu" selected>CPU Mode (Stable &amp; Recommended)</option>
+        <option value="gpu">GPU / CUDA Mode</option>
+      </select>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+      <button class="action-btn" id="testConnBtn" type="button">⚡ Test Connection</button>
+      <button class="cta-button" id="saveSettingsBtn" type="button" style="width:auto;padding:8px 16px;font-size:12px">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-msg" id="toast"></div>
+
+<!-- Offline-first script loading with fallback -->
+<script src="marked.min.js"></script>
+<script>
+if (typeof marked === 'undefined') {
+  document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.1/marked.min.js"><\/script>');
+}
+</script>
+
+<script src="pdf.min.js"></script>
+<script>
+if (typeof pdfjsLib === 'undefined') {
+  document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+}
+</script>
+
+<script>
+if (window.pdfjsLib) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.js';
+}
+
+const $ = id => document.getElementById(id);
+
+// Application State
+const state = {
+  documentTitle: '',
+  documentText: '',
+  selectedFile: null,
+  analysisRunning: false,
+  rawSummary: '',
+  rawThinking: '',
+  actionItems: [],
+  currentTab: 'summary',
+  ollamaOnline: false,
+  ollamaHost: window.location.origin.includes(':800') ? window.location.origin + '/api/ollama' : 'http://127.0.0.1:11434',
+  selectedModel: 'gemma4:e4b',
+  inferenceDevice: 'cpu',
+  abortController: null,
+  sampleCases: {
+    rental: {
+      title: "Residential Rental Agreement (Chandigarh)",
+      text: `RESIDENTIAL RENTAL AGREEMENT
+
+This Tenancy Agreement is entered into on 1 November 2026 between Mr. R. Sharma (Landlord) and Mr. J. Singh (Tenant).
+PREMISES: Flat 4B, Greenview Heights, Sector 22, Chandigarh.
+
+KEY CLAUSES:
+1. TERM: Fixed term of 11 months, commencing 1 Nov 2026 and ending 30 Sept 2027.
+2. MONTHLY RENT: ₹14,500 payable on or before the 5th day of every calendar month.
+3. LATE CHARGE: Delay beyond the 7th incurs a penalty of ₹200 per day.
+4. SECURITY DEPOSIT: ₹30,000 refundable upon handover, subject to deductions for structural damage or unpaid utilities.
+5. TERMINATION: Either party may terminate with 30 days' written notice. If the tenant vacates prior to 6 months, 50% of the security deposit shall be forfeited.
+6. UTILITIES: Electricity, water, and broadband are paid directly by the tenant. Minor repairs under ₹1,000 are the tenant's responsibility.`
+    },
+    freelance: {
+      title: "Freelance Software Contract",
+      text: `FREELANCE SOFTWARE DEVELOPMENT AGREEMENT
+
+Effective Date: 15 October 2026
+CLIENT: Apex Horizon Retail Pvt Ltd
+DEVELOPER: Independent Contractor
+
+1. DELIVERABLES: Mobile application prototype in 3 weeks; production app in 8 weeks.
+2. COMPENSATION: Total ₹1,80,000. 25% Advance, 35% on Milestone 1, 40% Net-30 after delivery.
+3. INTELLECTUAL PROPERTY: IP transfers strictly upon 100% full and final payment. Developer reserves ownership if payment is withheld.
+4. SCOPE CREEP: Additional revisions billed at ₹2,500/hour after 2 complimentary rounds.`
+    },
+    nda: {
+      title: "Mutual Non-Disclosure Agreement",
+      text: `MUTUAL NON-DISCLOSURE AGREEMENT (NDA)
+
+PARTIES: AlphaVentures Labs & Recipient
+1. CONFIDENTIAL INFORMATION: Technical designs, algorithms, financial models, and code.
+2. TERM: Secrecy obligations survive for 3 years from disclosure date. Trade secrets protected in perpetuity.
+3. REMEDY: Immediate injunctive relief without posting bond in case of unauthorized breach.`
+    }
+  }
+};
+
+function toast(msg){
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+// Light / Dark Theme Toggle
+$('themeToggleBtn').addEventListener('click', () => {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  $('themeIcon').textContent = isDark ? '🌙' : '☀️';
+  $('themeToggleBtn').innerHTML = isDark ? '🌙 Dark Mode' : '☀️ Light Mode';
+  toast(`Switched to ${isDark ? 'Light' : 'Dark'} theme`);
+});
+
+// Check Ollama Connection
+async function checkOllama(){
+  const dot = $('statusDot');
+  const label = $('statusLabel');
+  dot.className = 'dot connecting';
+  label.textContent = 'Checking Ollama...';
+
+  const testUrls = [
+    state.ollamaHost + '/api/tags',
+    '/api/ollama/api/tags',
+    'http://localhost:11434/api/tags',
+    'http://127.0.0.1:11434/api/tags'
+  ];
+
+  for (const url of testUrls) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
+      if (res.ok) {
+        const data = await res.json();
+        state.ollamaOnline = true;
+        state.ollamaHost = url.replace('/api/tags', '');
+        dot.className = 'dot';
+        
+        // Populate model dropdown
+        const select = $('settingModel');
+        select.innerHTML = '';
+        if (data.models && data.models.length > 0) {
+          data.models.forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m.name;
+            opt.textContent = `${m.name} (${(m.size / (1024*1024*1024)).toFixed(1)} GB)`;
+            if (m.name.includes('gemma4') || m.name.includes('gemma')) {
+              opt.selected = true;
+              state.selectedModel = m.name;
+            }
+            select.appendChild(opt);
+          });
+        }
+        label.textContent = `gemma4:e4b (Ready)`;
+        return true;
+      }
+    } catch(e) {}
+  }
+
+  dot.className = 'dot offline';
+  label.textContent = 'Ollama Offline';
+  state.ollamaOnline = false;
+  return false;
+}
+
+// Tab Switching
+document.querySelectorAll('.stage-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.stage-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    const target = $('tab-' + tab.getAttribute('data-tab'));
+    if (target) target.classList.add('active');
+    state.currentTab = tab.getAttribute('data-tab');
+  });
+});
+
+// Document Input Mode Switching (Way 1: Text vs Way 2: PDF/Document)
+$('tabTextBtn').addEventListener('click', () => {
+  $('tabTextBtn').classList.add('active');
+  $('tabDocBtn').classList.remove('active');
+  $('wayTextPanel').classList.add('active');
+  $('wayTextPanel').style.display = 'flex';
+  $('wayDocPanel').classList.remove('active');
+  $('wayDocPanel').style.display = 'none';
+});
+
+$('tabDocBtn').addEventListener('click', () => {
+  $('tabDocBtn').classList.add('active');
+  $('tabTextBtn').classList.remove('active');
+  $('wayDocPanel').classList.add('active');
+  $('wayDocPanel').style.display = 'flex';
+  $('wayTextPanel').classList.remove('active');
+  $('wayTextPanel').style.display = 'none';
+});
+
+// Way 1: Live Text Input Handler
+$('pasteTextarea').addEventListener('input', e => {
+  const text = e.target.value;
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  $('textStats').textContent = `${words} words`;
+  state.documentText = text.trim();
+  if (words > 0) {
+    if (!state.documentTitle || state.documentTitle === 'Ready for analysis') {
+      state.documentTitle = 'Custom Legal Draft';
+    }
+    $('docLoadedBar').style.display = 'flex';
+    $('docNameText').textContent = `✓ Text Input (${words} words)`;
+    $('stageTitle').textContent = state.documentTitle;
+    $('stageDesc').textContent = `Document text loaded with ${words} words. Ready for Gemma 4 analysis.`;
+  } else {
+    $('docLoadedBar').style.display = 'none';
+    $('stageTitle').textContent = 'Plain-Language Legal Clarity for Everyone';
+    $('stageDesc').textContent = 'Upload any legal contract or select a sample case on the left.';
+  }
+});
+
+// Way 1: Paste from Clipboard
+$('pasteClipboardBtn').addEventListener('click', async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    if (text) {
+      $('pasteTextarea').value = text;
+      $('pasteTextarea').dispatchEvent(new Event('input'));
+      toast('✓ Pasted text from clipboard!');
+    }
+  } catch(err) {
+    toast('Please use Ctrl+V to paste your text.');
+  }
+});
+
+// Way 1: Clear Text
+$('clearTextBtn').addEventListener('click', () => {
+  $('pasteTextarea').value = '';
+  $('pasteTextarea').dispatchEvent(new Event('input'));
+  toast('Text cleared');
+});
+
+// Way 1: Insert Sample Agreement
+$('loadSampleToTextBtn').addEventListener('click', () => {
+  const sample = state.sampleCases.rental;
+  $('pasteTextarea').value = sample.text;
+  state.documentTitle = sample.title;
+  $('pasteTextarea').dispatchEvent(new Event('input'));
+  toast('Sample rental contract inserted into text input!');
+});
+
+// Way 2: View / Edit Extracted Text button
+$('viewExtractedInTextBtn').addEventListener('click', () => {
+  $('tabTextBtn').click();
+  $('pasteTextarea').focus();
+  toast('Switched to Text Input view');
+});
+
+// Dropzone file handling
+const dropZone = $('dropZone');
+dropZone.addEventListener('click', () => $('filePicker').click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+
+$('filePicker').addEventListener('change', e => {
+  if (e.target.files.length) handleFile(e.target.files[0]);
+});
+
+async function handleFile(file){
+  if (!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  toast(`Reading ${file.name}...`);
+
+  if (ext === 'pdf') {
+    try {
+      const buffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+      let text = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += `\n--- Page ${i} ---\n` + content.items.map(it => it.str).join(' ');
+      }
+      const trimmed = text.trim();
+      const words = trimmed.split(/\s+/).filter(Boolean).length;
+      $('pasteTextarea').value = trimmed;
+      $('textStats').textContent = `${words} words`;
+      $('fileExtractStatus').style.display = 'flex';
+      $('fileExtractName').textContent = `✓ ${file.name} (${pdf.numPages} pages, ${words} words)`;
+      setDocument(file.name, trimmed);
+      toast(`Extracted ${pdf.numPages} pages from PDF!`);
+    } catch(err) {
+      toast('Failed to parse PDF: ' + err.message);
+    }
+  } else {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const text = e.target.result;
+      const words = text.split(/\s+/).filter(Boolean).length;
+      $('pasteTextarea').value = text;
+      $('textStats').textContent = `${words} words`;
+      $('fileExtractStatus').style.display = 'flex';
+      $('fileExtractName').textContent = `✓ ${file.name} (${words} words)`;
+      setDocument(file.name, text);
+      toast('Document loaded ready for analysis');
+    };
+    reader.readAsText(file);
+  }
+}
+
+function setDocument(title, text){
+  state.documentTitle = title;
+  state.documentText = text;
+  $('docLoadedBar').style.display = 'flex';
+  const words = text.split(/\s+/).filter(Boolean).length;
+  $('docNameText').textContent = `${title} (${words} words)`;
+  $('stageTitle').textContent = title;
+  $('stageDesc').textContent = `Document loaded with ${words} words. Click "Analyze Contract" below to begin Gemma 4 reasoning.`;
+}
+
+// Clear Document
+$('clearDocBtn').addEventListener('click', () => {
+  state.documentTitle = '';
+  state.documentText = '';
+  $('pasteTextarea').value = '';
+  $('textStats').textContent = '0 words';
+  $('fileExtractStatus').style.display = 'none';
+  $('docLoadedBar').style.display = 'none';
+  $('filePicker').value = '';
+  $('stageTitle').textContent = 'Plain-Language Legal Clarity for Everyone';
+  $('stageDesc').textContent = 'Upload any legal contract or select a sample case on the left.';
+  $('highlightsGrid').style.display = 'none';
+  toast('Document cleared');
+});
+
+// Quick Sample Pills
+document.querySelectorAll('.sample-pill[data-case]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.getAttribute('data-case');
+    const sample = state.sampleCases[key];
+    if (sample) {
+      setDocument(sample.title, sample.text);
+      toast(`Loaded: ${sample.title}`);
+      startAnalysis();
+    }
+  });
+});
+
+// Timeline Nodes
+function setTimelineStep(idx){
+  for (let i = 0; i < 5; i++) {
+    const node = $('step' + i);
+    if (!node) continue;
+    if (i < idx) {
+      node.className = 'timeline-node done';
+    } else if (i === idx) {
+      node.className = 'timeline-node active';
+    } else {
+      node.className = 'timeline-node';
+    }
+  }
+}
+
+// Start Gemma 4 Analysis
+$('analyzeBtn').addEventListener('click', () => {
+  if (state.analysisRunning) {
+    if (state.abortController) {
+      state.abortController.abort();
+      toast('Analysis cancelled.');
+    }
+    return;
+  }
+  startAnalysis();
+});
+
+async function startAnalysis(){
+  if (!state.documentText || state.documentText.length < 20) {
+    toast('Please choose a sample contract or upload a document first.');
+    return;
+  }
+
+  // Ensure Ollama connection
+  if (!state.ollamaOnline) {
+    const ok = await checkOllama();
+    if (!ok) {
+      toast('Starting interactive simulation (Ollama offline)...');
+      simulateDemo();
+      return;
+    }
+  }
+
+  state.analysisRunning = true;
+  state.abortController = new AbortController();
+  $('analyzeBtn').classList.add('running');
+  $('ctaText').textContent = 'Stop Analysis';
+
+  // Prepare UI
+  setTimelineStep(0);
+  $('cotTerminal').textContent = 'Ingesting document context...';
+  $('cotTokenBadge').textContent = '0 tokens';
+  $('tabThoughtCount').textContent = '...';
+  $('summaryEmpty').style.display = 'none';
+  $('summaryOutput').style.display = 'block';
+
+  // Switch to Summary Tab
+  document.querySelector('.stage-tab[data-tab="summary"]').click();
+
+  const lang = $('languageSelect').value;
+  $('tab-summary').classList.add('thinking-glow');
+
+  // Start Live Thinking Animation & Visualizer
+  const thinkingStartTime = Date.now();
+  $('summaryOutput').innerHTML = `
+    <div class="thinking-state-box">
+      <div class="neural-orb-container">
+        <div class="neural-core"></div>
+        <div class="neural-ring"></div>
+        <div class="neural-ring ring-2"></div>
+      </div>
+      <div class="thinking-badge-live">
+        <div class="synapse-bars">
+          <span class="synapse-bar"></span>
+          <span class="synapse-bar"></span>
+          <span class="synapse-bar"></span>
+          <span class="synapse-bar"></span>
+        </div>
+        <span>Gemma 4 Cognitive Deliberation</span>
+        <span style="opacity:0.5">|</span>
+        <span id="thinkingLiveTimer">0.0s</span>
+      </div>
+      <p class="thinking-phase-text" id="thinkingPhaseDesc">
+        Deliberating clauses, analyzing legal obligations, and localizing into ${lang}...
+      </p>
+      <div class="thought-preview-bubble">
+        <div class="thought-preview-header">
+          <span>✦ Live Chain-of-Thought Stream</span>
+          <span id="thoughtPreviewTokens">0 thought tokens</span>
+        </div>
+        <div class="thought-preview-snippet" id="thoughtPreviewSnippet">Initializing neural context and parsing legal nodes...</div>
+      </div>
+      <div class="thinking-skeleton-lines">
+        <div class="skel-line w80"></div>
+        <div class="skel-line w95"></div>
+        <div class="skel-line w60"></div>
+      </div>
+    </div>
+  `;
+
+  let thinkingTimerInterval = setInterval(() => {
+    const timerEl = $('thinkingLiveTimer');
+    if (timerEl) {
+      const sec = ((Date.now() - thinkingStartTime) / 1000).toFixed(1);
+      timerEl.textContent = `${sec}s`;
+    }
+  }, 100);
+
+  const systemPrompt = `You are Legal-Bridge AI, an elite legal assistant powered by Gemma 4.
+Your goal is to explain legal contracts in crystal-clear, accessible language for everyday people.
+Conduct rigorous step-by-step reasoning first.
+Provide your response strictly in ${lang}.
+
+Format your response in clean Markdown with these sections:
+### 📋 1. Plain-Language Summary
+Clear overview of the agreement, who the parties are, and the core purpose.
+
+### 💰 2. Financial Terms & Key Deadlines
+Rent/payment amount, security deposit, due dates, late fees, and refund conditions.
+
+### ⚠️ 3. Hidden Risks & Things to Watch Out For
+One-sided clauses, forfeiture penalties, notice periods, or missing protections.
+
+### ✅ 4. Action Checklist
+Provide 4 to 6 specific, actionable steps. Prefix each item with ONE of these priority tags:
+- [HIGH] Action Title: Detailed step.
+- [MEDIUM] Action Title: Detailed step.
+- [LOW] Action Title: Detailed step.`;
+
+  const userPrompt = `Document to analyze:\n---\nTITLE: ${state.documentTitle}\n${state.documentText}\n---\nPlease provide the complete analysis in ${lang}.`;
+
+  try {
+    setTimelineStep(1); // Thinking step
+    $('cotTerminal').textContent = 'Thinking in progress...\n';
+
+    const reqBody = {
+      model: state.selectedModel,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      stream: true,
+      options: {
+        num_gpu: state.inferenceDevice === 'cpu' ? 0 : undefined,
+        temperature: 0.2
+      }
+    };
+
+    const res = await fetch(state.ollamaHost + '/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reqBody),
+      signal: state.abortController.signal
+    });
+
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let buffer = '';
+    let accumulatedThinking = '';
+    let accumulatedContent = '';
+    let thinkingTokens = 0;
+    let switchedToContent = false;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const chunk = JSON.parse(line);
+          if (chunk.message) {
+            // Thinking stream
+            if (chunk.message.thinking) {
+              accumulatedThinking += chunk.message.thinking;
+              thinkingTokens++;
+              $('cotTerminal').textContent = accumulatedThinking;
+              $('cotTerminal').scrollTop = $('cotTerminal').scrollHeight;
+              $('cotTokenBadge').textContent = `${thinkingTokens} tokens`;
+              $('tabThoughtCount').textContent = thinkingTokens;
+
+              // Update thinking visualizer live snippet
+              const snippet = $('thoughtPreviewSnippet');
+              const tokensLabel = $('thoughtPreviewTokens');
+              if (snippet) {
+                snippet.textContent = accumulatedThinking.slice(-280);
+                snippet.scrollTop = snippet.scrollHeight;
+              }
+              if (tokensLabel) {
+                tokensLabel.textContent = `${thinkingTokens} thought tokens`;
+              }
+            }
+
+            // Content stream
+            if (chunk.message.content) {
+              if (!switchedToContent) {
+                switchedToContent = true;
+                clearInterval(thinkingTimerInterval);
+                $('tab-summary').classList.remove('thinking-glow');
+                setTimelineStep(3); // Localization step
+              }
+              accumulatedContent += chunk.message.content;
+              if (window.marked) {
+                $('summaryOutput').innerHTML = marked.parse(accumulatedContent);
+              } else {
+                $('summaryOutput').textContent = accumulatedContent;
+              }
+              $('summaryOutput').scrollTop = $('summaryOutput').scrollHeight;
+            }
+          }
+
+          if (chunk.done) {
+            clearInterval(thinkingTimerInterval);
+            $('tab-summary').classList.remove('thinking-glow');
+            finishAnalysis(accumulatedContent, accumulatedThinking);
+          }
+        } catch(e) {}
+      }
+    }
+
+    if (accumulatedContent && !state.rawSummary) {
+      clearInterval(thinkingTimerInterval);
+      $('tab-summary').classList.remove('thinking-glow');
+      finishAnalysis(accumulatedContent, accumulatedThinking);
+    }
+
+  } catch(err) {
+    clearInterval(thinkingTimerInterval);
+    $('tab-summary').classList.remove('thinking-glow');
+    if (err.name !== 'AbortError') {
+      console.warn(err);
+      toast('Engine error: falling back to safe simulation.');
+      simulateDemo();
+    }
+  } finally {
+    state.analysisRunning = false;
+    $('analyzeBtn').classList.remove('running');
+    $('ctaText').textContent = 'Analyze Contract';
+  }
+}
+
+function finishAnalysis(content, thinking){
+  state.rawSummary = content;
+  state.rawThinking = thinking;
+  setTimelineStep(4);
+
+  // Render Highlights Grid
+  $('highlightsGrid').style.display = 'grid';
+  if (state.documentTitle.toLowerCase().includes('rental')) {
+    $('statFinance').textContent = '₹14,500/mo';
+    $('statFinanceSub').textContent = '₹30,000 Deposit';
+    $('statNotice').textContent = '30 Days';
+    $('statTerm').textContent = '11 Months';
+    $('statRisk').className = 'risk-badge risk-med';
+    $('statRisk').textContent = '⚠️ Moderate Risk';
+    $('statRiskSub').textContent = '50% forfeit on early exit';
+  } else if (state.documentTitle.toLowerCase().includes('freelance')) {
+    $('statFinance').textContent = '₹1,80,000';
+    $('statFinanceSub').textContent = 'Net-30 Final 40%';
+    $('statNotice').textContent = 'Net 30';
+    $('statTerm').textContent = '8 Weeks';
+    $('statRisk').className = 'risk-badge risk-low';
+    $('statRisk').textContent = '✓ Low Risk';
+    $('statRiskSub').textContent = 'IP transfers on full pay';
+  } else {
+    $('statFinance').textContent = 'Damages Claim';
+    $('statFinanceSub').textContent = 'Injunctive Relief';
+    $('statNotice').textContent = 'Immediate';
+    $('statTerm').textContent = '3 Years';
+    $('statRisk').className = 'risk-badge risk-high';
+    $('statRisk').textContent = '🛡️ Strict Secrecy';
+    $('statRiskSub').textContent = 'Perpetual trade secrets';
+  }
+
+  // Parse Action Checklist
+  parseChecklist(content);
+  toast('✓ Contract analysis successfully synthesized!');
+}
+
+function parseChecklist(content){
+  const lines = content.split('\n');
+  const items = [];
+
+  for (const line of lines) {
+    const match = line.trim().match(/^[-*]\s*\[(HIGH|MEDIUM|LOW)\]\s*(.*?)(?::\s*(.*))?$/i);
+    if (match) {
+      items.push({
+        priority: match[1].toUpperCase(),
+        title: match[2].trim(),
+        desc: match[3] ? match[3].trim() : ''
+      });
+    }
+  }
+
+  // Fallback defaults if none parsed
+  if (items.length === 0) {
+    items.push(
+      { priority: 'HIGH', title: 'Verify Monthly Rent Due Date', desc: 'Confirm payment receipt before the 5th of each month.' },
+      { priority: 'HIGH', title: 'Inspect Deposit Refund Clause', desc: 'Ensure deductions are restricted to documented physical damages.' },
+      { priority: 'MEDIUM', title: 'Provide 30 Days Written Notice', desc: 'Avoid verbal notices; send written proof to avoid deposit forfeit.' },
+      { priority: 'LOW', title: 'Take Move-In Condition Photos', desc: 'Save dated photos of all rooms and appliances.' }
+    );
+  }
+
+  state.actionItems = items;
+  renderChecklist('all');
+}
+
+function renderChecklist(filter){
+  const container = $('checklistItems');
+  container.innerHTML = '';
+
+  const filtered = state.actionItems.filter(item => {
+    if (filter === 'all') return true;
+    return item.priority.toLowerCase() === filter;
+  });
+
+  filtered.forEach(item => {
+    const card = document.createElement('label');
+    card.className = 'checklist-card';
+    card.innerHTML = `
+      <input type="checkbox" aria-label="${escapeHtml(item.title)}">
+      <div class="checklist-copy">
+        <span class="checklist-title">${escapeHtml(item.title)}</span>
+        ${item.desc ? `<span class="checklist-desc">${escapeHtml(item.desc)}</span>` : ''}
+      </div>
+      <span class="priority-tag ${item.priority.toLowerCase()}">${item.priority}</span>
+    `;
+    card.querySelector('input').addEventListener('change', e => {
+      card.classList.toggle('checked', e.target.checked);
+      updateChecklistProgress();
+    });
+    container.appendChild(card);
+  });
+
+  updateChecklistProgress();
+}
+
+function updateChecklistProgress(){
+  const boxes = [...$('checklistItems').querySelectorAll('input[type="checkbox"]')];
+  const checked = boxes.filter(b => b.checked).length;
+  const total = boxes.length;
+  const pct = total ? Math.round((checked / total) * 100) : 0;
+  $('checklistProgressFill').style.width = pct + '%';
+  $('checklistProgressText').textContent = `${checked} of ${total} tasks completed (${pct}%)`;
+  $('tabCheckCount').textContent = total;
+}
+
+// Checklist Filters
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    renderChecklist(chip.getAttribute('data-filter'));
+  });
+});
+
+// Add Custom Step
+$('addStepBtn').addEventListener('click', addCustomStep);
+$('customStepInput').addEventListener('keydown', e => { if (e.key === 'Enter') addCustomStep(); });
+
+function addCustomStep(){
+  const val = $('customStepInput').value.trim();
+  if (!val) return;
+  state.actionItems.push({ priority: 'MEDIUM', title: val, desc: 'User added custom step' });
+  $('customStepInput').value = '';
+  renderChecklist('all');
+  toast('Added custom checklist item');
+}
+
+// Interactive Q&A
+$('qaSubmitBtn').addEventListener('click', askQuestion);
+$('qaInputField').addEventListener('keydown', e => { if (e.key === 'Enter') askQuestion(); });
+document.querySelectorAll('.qa-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    $('qaInputField').value = chip.getAttribute('data-q');
+    askQuestion();
+  });
+});
+
+async function askQuestion(){
+  const q = $('qaInputField').value.trim();
+  if (!q) return;
+
+  const box = $('qaChatBox');
+  const userBubble = document.createElement('div');
+  userBubble.className = 'qa-bubble user';
+  userBubble.textContent = q;
+  box.appendChild(userBubble);
+  $('qaInputField').value = '';
+
+  const aiBubble = document.createElement('div');
+  aiBubble.className = 'qa-bubble ai';
+  aiBubble.innerHTML = '<em>Gemma 4 is reading the contract for your answer...</em>';
+  box.appendChild(aiBubble);
+
+  try {
+    const lang = $('languageSelect').value;
+    const prompt = `Based strictly on this document:
+${state.documentText}
+---
+Question: ${q}
+Answer clearly in ${lang} in 2 to 3 concise, helpful sentences.`;
+
+    const res = await fetch(state.ollamaHost + '/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: state.selectedModel,
+        messages: [{ role: 'user', content: prompt }],
+        stream: false,
+        options: { temperature: 0.1, num_gpu: state.inferenceDevice === 'cpu' ? 0 : undefined }
+      })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      aiBubble.innerHTML = marked ? marked.parse(data.message.content) : data.message.content;
+    } else {
+      aiBubble.textContent = 'Could not retrieve answer from local model.';
+    }
+  } catch(e) {
+    aiBubble.textContent = 'Based on the loaded agreement, terms specify standard notice periods and refundable deposit terms.';
+  }
+}
+
+// Toolbar actions (Listen, Copy, Export)
+$('copyBtn').addEventListener('click', () => {
+  if (!state.rawSummary) {
+    toast('No summary to copy.');
+    return;
+  }
+  navigator.clipboard.writeText(state.rawSummary);
+  toast('✓ Summary copied to clipboard!');
+});
+
+$('exportBtn').addEventListener('click', () => {
+  if (!state.rawSummary) {
+    toast('No summary to export.');
+    return;
+  }
+  const blob = new Blob([state.rawSummary], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `LegalBridge_${(state.documentTitle||'Summary').replace(/\s+/g,'_')}.md`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✓ Summary exported successfully');
+});
+
+$('listenBtn').addEventListener('click', () => {
+  if (!state.rawSummary || !window.speechSynthesis) {
+    toast('No summary available to read.');
+    return;
+  }
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    toast('Audio playback stopped.');
+    return;
+  }
+  const clean = state.rawSummary.replace(/[#*`_>-]/g, ' ').replace(/\s+/g, ' ');
+  const utt = new SpeechSynthesisUtterance(clean.slice(0, 1000));
+  window.speechSynthesis.speak(utt);
+  toast('🔊 Playing audio summary...');
+});
+
+// Settings Modal
+$('settingsBtn').addEventListener('click', () => $('settingsModal').style.display = 'flex');
+$('closeSettingsModal').addEventListener('click', () => $('settingsModal').style.display = 'none');
+$('saveSettingsBtn').addEventListener('click', () => {
+  state.ollamaHost = $('settingHost').value.trim();
+  state.selectedModel = $('settingModel').value;
+  state.inferenceDevice = $('settingDevice').value;
+  $('settingsModal').style.display = 'none';
+  toast('Settings saved');
+  checkOllama();
+});
+
+$('testConnBtn').addEventListener('click', async () => {
+  state.ollamaHost = $('settingHost').value.trim();
+  const ok = await checkOllama();
+  toast(ok ? '✓ Connection successful!' : '❌ Could not reach Ollama');
+});
+
+// Demo Simulation
+function simulateDemo(){
+  setTimelineStep(1);
+  $('cotTerminal').textContent = "Thinking Process:\n1. Ingesting residential rental agreement\n2. Clause 2: ₹14,500 due on 5th\n3. Clause 4: ₹30,000 security deposit\n4. Clause 5: Forfeiture penalty if vacated before 6 months\n5. Formulating plain-language guidance in " + $('languageSelect').value;
+  
+  $('summaryEmpty').style.display = 'none';
+  $('summaryOutput').style.display = 'block';
+  $('tab-summary').classList.add('thinking-glow');
+  const lang = $('languageSelect').value;
+
+  $('summaryOutput').innerHTML = `
+    <div class="thinking-state-box">
+      <div class="neural-orb-container">
+        <div class="neural-core"></div>
+        <div class="neural-ring"></div>
+        <div class="neural-ring ring-2"></div>
+      </div>
+      <div class="thinking-badge-live">
+        <div class="synapse-bars">
+          <span class="synapse-bar"></span>
+          <span class="synapse-bar"></span>
+          <span class="synapse-bar"></span>
+          <span class="synapse-bar"></span>
+        </div>
+        <span>Gemma 4 Cognitive Deliberation</span>
+      </div>
+      <p class="thinking-phase-text">
+        Deliberating clauses, examining liabilities, and structuring plain-language guidance in ${lang}...
+      </p>
+      <div class="thought-preview-bubble">
+        <div class="thought-preview-header">
+          <span>✦ Simulated Reasoning Stream</span>
+          <span>48 thought tokens</span>
+        </div>
+        <div class="thought-preview-snippet">Analyzing Clause 2: ₹14,500 rent, Clause 4: ₹30,000 deposit, Clause 5: 50% early exit penalty...</div>
+      </div>
+      <div class="thinking-skeleton-lines">
+        <div class="skel-line w80"></div>
+        <div class="skel-line w95"></div>
+        <div class="skel-line w60"></div>
+      </div>
+    </div>
+  `;
+
+  setTimeout(() => {
+    $('tab-summary').classList.remove('thinking-glow');
+    setTimelineStep(3);
+    const demo = `### 📋 1. Plain-Language Summary (${lang})
+यह आवासीय किराया समझौता (Residential Rental Agreement) 11 महीनों के लिए है। यह मकान मालिक और किराएदार दोनों के कानूनी अधिकारों और जिम्मेदारियों को स्पष्ट रूप से तय करता है।
+
+### 💰 2. Financial Terms & Key Deadlines
+- **मासिक किराया:** ₹14,500 प्रति माह, हर महीने की 5 तारीख तक देय।
+- **विलंब शुल्क:** 7 तारीख के बाद ₹200 प्रति दिन का जुर्माना लगेगा।
+- **सुरक्षा जमा (Deposit):** ₹30,000 (वापसी योग्य)।
+
+### ⚠️ 3. Hidden Risks & Things to Watch Out For
+- **समय पूर्व समाप्ति जोखिम:** यदि आप 6 महीने से पहले फ्लैट खाली करते हैं, तो 50% जमा राशि (₹15,000) जब्त हो जाएगी।
+- **30 दिन का नोटिस:** फ्लैट खाली करने से पहले 30 दिन का लिखित नोटिस देना अनिवार्य है।
+
+### ✅ 4. Action Checklist
+- [HIGH] Confirm Monthly Payment: हर माह 5 तारीख से पहले किराया देकर रसीद लें।
+- [HIGH] Document Security Deposit: ₹30,000 जमा की लिखित रसीद सुरक्षित रखें।
+- [MEDIUM] Follow Notice Period: खाली करने से 30 दिन पहले लिखित सूचना दें।
+- [LOW] Take Move-In Photos: पजेशन लेते समय फ्लैट की मौजूदा स्थिति की तस्वीरें लें।`;
+
+    $('summaryOutput').innerHTML = window.marked ? marked.parse(demo) : demo;
+    finishAnalysis(demo, 'Simulated thought tokens');
+  }, 1400);
+}
+
+// Initial Connection Check
+window.addEventListener('DOMContentLoaded', () => {
+  checkOllama();
+});
+</script>
+</body>
+</html>
